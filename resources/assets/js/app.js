@@ -6,6 +6,8 @@
 
 require('./bootstrap');
 
+// window.$ = window.JQuery = require('jquery');
+
 window.Vue = require('vue');
 
 /**
@@ -21,6 +23,19 @@ window.Vue = require('vue');
 
 Vue.component('categoria', require('./components/Categoria.vue').default);
 
+Vue.component('user', require('./components/User.vue').default);
+
+Vue.component('item', require('./components/Item.vue').default);
+
+Vue.component('proveedor', require('./components/Proveedor.vue').default);
+
+Vue.component('ingreso', require('./components/Ingreso.vue').default);
+
+Vue.component('egreso', require('./components/Egreso.vue').default);
+
+Vue.component('dashboard', require('./components/Dashboard.vue').default);
+
+Vue.component('notification', require('./components/Notification.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -28,10 +43,29 @@ Vue.component('categoria', require('./components/Categoria.vue').default);
  */
 
 const app = new Vue({
-    el: '#app',
-    data() {
-        return {
-            menu : 0
-        }
-    },
+  el: '#app',
+  data() {
+    return {
+      menu : 0,
+      ruta: 'http://localhost/proyecto_integrador/public',
+      notifications: []
+    }
+  },
+  created() {
+    let me = this;
+    axios.post(this.ruta + '/notification/get').then(response => {
+      // console.log(response.data);
+      me.notifications = response.data;
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+    var userId = $('meta[name="userId"]').attr('content');
+
+    Echo.private('App.User.'+userId).notification(notification => {
+      // console.log(notification);
+      me.notifications.unshift(notification);
+    });
+  },
 });

@@ -2,11 +2,9 @@
   <main class="main">
     <!-- Breadcrumb -->
     <ol class="breadcrumb">
-      <li class="breadcrumb-item">Home</li>
       <li class="breadcrumb-item">
-        <a href="#">Admin</a>
+        <a href="/">Escritorio</a>
       </li>
-      <li class="breadcrumb-item active">Dashboard</li>
     </ol>
     <div class="container-fluid">
       <!-- Ejemplo de tabla Listado -->
@@ -180,6 +178,7 @@
 
 <script>
 export default {
+  props: ['ruta'],
   data() {
     return {
       categoria_id: 0,
@@ -234,7 +233,7 @@ export default {
   methods: {
     listarCategoria(page, buscar, criterio) {
       let me = this;
-      let url = "/categoria?page=" + page + "&buscar=" + buscar + "&criterio=" + criterio;
+      let url = this.ruta + "/categoria?page=" + page + "&buscar=" + buscar + "&criterio=" + criterio;
       axios
         .get(url)
         .then(function(response) {
@@ -258,9 +257,9 @@ export default {
 
       let me = this;
       axios
-        .post("/categoria/registrar", {
-          nombre: this.nombre,
-          descripcion: this.descripcion
+        .post(this.ruta+"/categoria/registrar", {
+          'nombre': this.nombre,
+          'descripcion': this.descripcion
         })
         .then(function(response) {
           me.cerrarModal();
@@ -277,10 +276,10 @@ export default {
 
       let me = this;
       axios
-        .put("/categoria/actualizar", {
-          nombre: this.nombre,
-          descripcion: this.descripcion,
-          id: this.categoria_id
+        .put(this.ruta+"/categoria/actualizar", {
+          'nombre': this.nombre,
+          'descripcion': this.descripcion,
+          'id': this.categoria_id
         })
         .then(function(response) {
           me.cerrarModal();
@@ -312,7 +311,7 @@ export default {
           if (result.value) {
             let me = this;
             axios
-              .put("/categoria/desactivar", {
+              .put(this.ruta+"/categoria/desactivar", {
                 'id': id
               })
               .then(function(response) {
@@ -327,15 +326,6 @@ export default {
                 console.log(error);
               });
 
-          } else if (
-            // Read more about handling dismissals
-            result.dismiss === Swal.DismissReason.cancel
-          ) {
-            swalWithBootstrapButtons.fire(
-              "Cancelado",
-              "Tu registro no ha sido desactivado",
-              "error"
-            );
           }
         });
     },
@@ -350,7 +340,7 @@ export default {
 
       swalWithBootstrapButtons
         .fire({
-          title: "¿Estás segura de activar esta categoría?",
+          title: "¿Estás seguro de activar esta categoría?",
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Aceptar",
@@ -361,30 +351,20 @@ export default {
           if (result.value) {
             let me = this;
             axios
-              .put("/categoria/activar", {
+              .put(this.ruta+"/categoria/activar", {
                 'id': id
               })
               .then(function(response) {
                 me.listarCategoria(1, '', 'nombre');
                 swalWithBootstrapButtons.fire(
-                    "Desactivado!",
-                    "El registro ha sido desactivado con éxito.",
+                    "Activado!",
+                    "El registro ha sido activado con éxito.",
                     "success"
                 );
               })
               .catch(function(error) {
                 console.log(error);
               });
-
-          } else if (
-            // Read more about handling dismissals
-            result.dismiss === Swal.DismissReason.cancel
-          ) {
-            swalWithBootstrapButtons.fire(
-              "Cancelado",
-              "Tu registro no ha sido activado",
-              "error"
-            );
           }
         });
     },

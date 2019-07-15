@@ -1,34 +1,43 @@
 @extends('principal')
 @section('contenido')
+
+@if (Auth::check())
+
 <template v-if="menu==0">
-   <h1>Contenido del menu 0</h1>
+  <dashboard :ruta="ruta"></dashboard>
 </template>
 <template v-if="menu==1">
-    <categoria></categoria>
+  <categoria :ruta="ruta"></categoria>
 </template>
 <template v-if="menu==2">
-    <h1>Contenido del menu 2</h1>
+  <item :ruta="ruta"></item>
 </template>
 <template v-if="menu==3">
-    <h1>Contenido del menu 3</h1>
+  <ingreso :ruta="ruta"></ingreso>
 </template>
 <template v-if="menu==4">
-    <h1>Contenido del menu 4</h1>
+  <proveedor :ruta="ruta"></proveedor>
 </template>
 <template v-if="menu==5">
-    <h1>Contenido del menu 5</h1>
+  <egreso :ruta="ruta"></egreso>
 </template>
 <template v-if="menu==6">
-    <h1>Contenido del menu 6</h1>
+  <user :ruta="ruta"></user>
 </template>
 <template v-if="menu==7">
-    <h1>Contenido del menu 7</h1>
+  <h1>Reporte Ingresos</h1>
 </template>
 <template v-if="menu==8">
-    <h1>Contenido del menu 8</h1>
+  <h1>Reporte Egresos</h1>
 </template>
 <template v-if="menu==9">
-    <h1>Contenido del menu 9</h1>
+  <h1>Ayuda</h1>
 </template>
+<template v-if="menu==10">
+  <h1>Acerca de...</h1>
+</template>
+
+@endif
+
 
 @endsection

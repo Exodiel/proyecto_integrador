@@ -44,10 +44,24 @@ return [
         ],
 
         'mysql' => [
+            // 'read' => [
+            //   'host' => env('DB_READ_HOST', 'localhost'),
+            //   'database' => env('DB_READ_DATABASE', ''),
+            //   'username' => env('DB_READ_USERNAME', ''),
+            //   'password' => env('DB_READ_PASSWORD', ''),
+            // ],
+            // 'write' => [
+            //   'host' => env('DB_WRITE_HOST', 'localhost'),
+            //   'database' => env('DB_WRITE_DATABASE', ''),
+            //   'username' => env('DB_WRITE_USERNAME', ''),
+            //   'password' => env('DB_WRITE_PASSWORD', ''),
+            // ],
+            // 'sticky' => true,
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
+            'database' => 'dbip',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
+            'url' => env('DATABASE_URL'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
