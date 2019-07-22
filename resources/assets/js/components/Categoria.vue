@@ -177,6 +177,7 @@
 </template>
 
 <script>
+import {Joi} from 'vue-joi-validation'
 export default {
   props: ['ruta'],
   data() {
@@ -208,27 +209,27 @@ export default {
         return this.pagination.current_page;
       },
       pageNumber: function() {
-          if(!this.pagination.to) {
-            return [];
-          }
+        if(!this.pagination.to) {
+          return [];
+        }
 
-          let from = this.pagination.current_page - this.offset;
-          if (from < 1) {
-            from = 1;
-          }
+        let from = this.pagination.current_page - this.offset;
+        if (from < 1) {
+          from = 1;
+        }
 
-          let to = from + (this.offset * 2);
-          if(to >= this.pagination.last_page){
-            to = this.pagination.last_page;
-          }
+        let to = from + (this.offset * 2);
+        if(to >= this.pagination.last_page){
+          to = this.pagination.last_page;
+        }
 
-          let pagesArray = [];
-          while (from <= to) {
-            pagesArray.push(from);
-            from++;
-          }
-          return pagesArray;
-      }
+        let pagesArray = [];
+        while (from <= to) {
+          pagesArray.push(from);
+          from++;
+        }
+        return pagesArray;
+      },
   },
   methods: {
     listarCategoria(page, buscar, criterio) {
@@ -371,10 +372,16 @@ export default {
     validarCategoria() {
       this.errorCategoria = 0;
       this.errorMostrarMsjCategoria = [];
-      if (!this.nombre)
-        this.errorMostrarMsjCategoria.push(
-          "El nombre de la categoría no puede estar vacío."
-        );
+      const schema = {
+        nombre: Joi.string().alphanum().min(2).max(50).required(),
+        descripcion: Joi.string().alphanum().min(2).max(256)
+      }
+      const value = {
+        nombre : this.nombre,
+        descripcion: this.descripcion
+      }
+      const { error } = Joi.validate(value, schema);
+      if (error) this.errorMostrarMsjCategoria.push(error.details[0].message);
       if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
 
       return this.errorCategoria;

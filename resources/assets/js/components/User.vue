@@ -172,15 +172,15 @@
                 <div class="col-md-9">
                   <select v-model="tipo_documento" class="form-control">
                     <option value="CEDULA">CEDULA</option>
-                    <option value="PASS">PASS</option>
+                    <option value="RUC_PN">RUC PERSONA NATURAL</option>
                   </select>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Número documento</label>
+                <label class="col-md-3 form-control-label" for="email-input">Número documento (*)</label>
                 <div class="col-md-9">
                   <input
-                    type="email"
+                    type="text"
                     v-model="num_documento"
                     class="form-control"
                     placeholder="Número de documento"
@@ -188,10 +188,10 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Dirección</label>
+                <label class="col-md-3 form-control-label" for="email-input">Dirección (*)</label>
                 <div class="col-md-9">
                   <input
-                    type="email"
+                    type="text"
                     v-model="direccion"
                     class="form-control"
                     placeholder="Dirección"
@@ -199,10 +199,10 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Teléfono</label>
+                <label class="col-md-3 form-control-label" for="email-input">Teléfono (*)</label>
                 <div class="col-md-9">
                   <input
-                    type="email"
+                    type="text"
                     v-model="telefono"
                     class="form-control"
                     placeholder="Teléfono"
@@ -210,13 +210,13 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Email</label>
+                <label class="col-md-3 form-control-label" for="email-input">Email (*)</label>
                 <div class="col-md-9">
                   <input type="email" v-model="email" class="form-control" placeholder="Email">
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Usuario</label>
+                <label class="col-md-3 form-control-label" for="email-input">Usuario (*)</label>
                 <div class="col-md-9">
                   <input
                     type="text"
@@ -227,7 +227,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Password</label>
+                <label class="col-md-3 form-control-label" for="email-input">Password (*)</label>
                 <div class="col-md-9">
                   <input
                     type="password"
@@ -240,6 +240,11 @@
               <div v-show="errorUser" class="form-group row div-error">
                 <div class="text-center text-error">
                   <div v-for="error in errorMostrarMsjUser" :key="error" v-text="error"></div>
+                </div>
+              </div>
+              <div v-show="errorUser" class="form-group row div-error">
+                <div class="text-center text-error">
+                  <div v-for="error in errorDocumento" :key="error" v-text="error"></div>
                 </div>
               </div>
             </form>
@@ -269,7 +274,10 @@
 </template>
 
 <script>
-
+import {Joi} from 'vue-joi-validation'
+import {strlen, str_split, substr} from 'locutus/php/strings'
+import {array_sum} from 'locutus/php/array'
+import {empty} from 'locutus/php/var'
 export default {
   props: ["ruta"],
   data() {
@@ -289,6 +297,7 @@ export default {
       tipoAccion: 0,
       errorUser: 0,
       errorMostrarMsjUser: [],
+      errorDocumento: [],
       pagination: {
         total: 0,
         current_page: 0,
@@ -409,22 +418,150 @@ export default {
       this.errorUser = 0;
       this.errorMostrarMsjUser = [];
 
-      if (!this.nombre)
-        this.errorMostrarMsjUser.push(
-          "El nombre del usuario no puede estar vacío."
-        );
-      if (!this.usuario)
-        this.errorMostrarMsjUser.push(
-          "El nombre de usuario no puede estar vacío."
-        );
-      if (!this.password)
-        this.errorMostrarMsjUser.push(
-          "La password del usuario no puede estar vacía."
-        );
+      const schema = {
+        nombre: Joi.string().min(5).max(100).required(),
+        num_documento: Joi.string().alphanum().min(10).max(13).required(),
+        telefono: Joi.string().alphanum().min(10).max(10).required(),
+        email: Joi.string().email({errorLevel: true}).min(12).max(80).required(),
+        usuario: Joi.string().alphanum().min(3).max(20).required(),
+        password: Joi.string().min(6).max(191).required()
+      }
+
+      const value = {
+        nombre: this.nombre,
+        num_documento: this.num_documento,
+        telefono: this.telefono,
+        email: this.email,
+        usuario: this.usuario,
+        password: this.password
+      }
+
+      const {error} = Joi.validate(value,schema)
+
+      if (error) this.errorMostrarMsjUser.push(error.details[0].message);
+
+      if (this.tipo_documento === 'CEDULA') {
+        if (!this.validarCedula(this.num_documento)) this.errorUser = 1;
+      }else {
+        if (!this.validarRucPersonaNatural(this.num_documento)) this.errorUser = 1;
+      }
 
       if (this.errorMostrarMsjUser.length) this.errorUser = 1;
 
       return this.errorUser;
+    },
+    validarCedula(numero = '') {
+
+      if (!this.validarInicial(numero, '10') &&
+      !this.validarCodigoProvincia(substr(numero,0,2)) &&
+      !this.validarTercerDigito(numero[2], 'cedula') &&
+      !this.algoritmoModulo10(substr(numero,0,9), numero[9])) {
+        return false;
+      }
+
+      return true;
+    },
+    validarRucPersonaNatural(numero = ''){
+
+      if (!this.validarInicial(numero, '13') &&
+      !this.validarCodigoProvincia(substr(numero,0,2)) &&
+      !this.validarTercerDigito(numero[2], 'ruc_natural') &&
+      !this.algoritmoModulo10(substr(numero,0,9), numero[9])) {
+        return false;
+      }
+
+      return true;
+    },
+    validarInicial(numero, caracteres){
+      if(empty(numero)){
+        this.errorDocumento.push("Número de documento no puede estar vacío");
+        return false;
+      }
+      if(!/^\d+$/.test(numero)) {
+        this.errorDocumento.push("Valor ingresado solo puede tener dígitos");
+        return false;
+      }
+      if (strlen(numero) != caracteres) {
+        this.errorDocumento.push(`Valor ingresado debe tener ${caracteres} caracteres`);
+        return false;
+      }
+
+      return true;
+
+    },
+    validarCodigoProvincia(numero){
+      if (numero < 0 || numero > 24) {
+        this.errorDocumento.push(`Codigo de Provincia (dos primeros dígitos) no deben ser mayor a 24 ni menores a 0`);
+        return false;
+      }
+
+      return true;
+    },
+    validarTercerDigito(numero, tipo){
+      switch (tipo) {
+        case 'cedula':
+          if (numero < 0 || numero < 5) {
+            this.errorDocumento.push("Tercer dígito debe ser menor a  6");
+            return false;
+          }
+          break;
+        case 'ruc_natural':
+          if (numero < 0 || numero > 5) {
+            this.errorDocumento('Tercer dígito debe ser mayor o igual a 0 y menor a 6 para cédulas y RUC de persona natural');
+            return false;
+          }
+          break;
+
+        default:
+          this.errorDocumento('Tipo de identificación no existe');
+          break;
+      }
+
+      return true;
+    },
+    validarCodigoEstablecimiento(numero){
+      if(numero < 1){
+        this.errorDocumento.push("Código de establecimiento no puede ser cero");
+        return false;
+      }
+      return true;
+    },
+    algoritmoModulo10(digitosIniciales, digitoVerificador){
+      let arrCoeficientes = [2,1,2,1,2,1,2,1,2];
+
+      digitoVerificador = parseInt(digitoVerificador);
+      digitosIniciales = str_split(digitosIniciales);
+
+      let total = 0;
+
+      digitosIniciales.forEach((val, i) => {
+        let valorPosicion = (parseInt(val) * arrCoeficientes[i]);
+
+        if (valorPosicion >= 10) {
+          valorPosicion = str_split(valorPosicion);
+          valorPosicion = array_sum(valorPosicion);
+          valorPosicion = parseInt(valorPosicion);
+        }
+
+        total = total + valorPosicion;
+      });
+
+      const residuo = total % 10;
+
+      let resultado = 0;
+
+      if (residuo == 0) {
+        resultado = 0;
+      }else {
+        resultado = 10 - residuo;
+      }
+
+      if (resultado != digitoVerificador) {
+        this.errorDocumento.push('Dígitos iniciales no validan contra Dígito Idenficador');
+        return false;
+      }
+
+      return true;
     },
     cerrarModal() {
       this.modal = 0;

@@ -17,10 +17,10 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('nombre', 100);
             $table->string('tipo_documento', 20);
-            $table->string('num_documento', 10);
+            $table->string('num_documento', 13);
             $table->string('direccion', 70);
             $table->string('telefono', 20);
-            $table->string('email', 50)->unique();
+            $table->string('email', 80)->unique();
             $table->string('usuario', 191);
             $table->string('password', 191);
             $table->boolean('condicion')->default(1);

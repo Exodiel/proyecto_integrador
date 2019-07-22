@@ -32,9 +32,6 @@
         <li class="nav-item px-3">
           <a class="nav-link" href="#">Escritorio</a>
         </li>
-        <li class="nav-item px-3">
-          <a class="nav-link" href="#">Configuraciones</a>
-        </li>
       </ul>
       <ul class="nav navbar-nav ml-auto">
         <notification :notifications="notifications" ></notification>
@@ -47,7 +44,8 @@
             <div class="dropdown-header text-center">
               <strong>Cuenta</strong>
             </div>
-            <a class="dropdown-item" href="{{ route('logout') }}" onclick="
+            <a class="dropdown-item" href="{{ route('logout') }}"
+            onclick="
               event.preventDefault();
               const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {

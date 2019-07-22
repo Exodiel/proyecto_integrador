@@ -231,7 +231,7 @@
               <div class="col-md-2">
                 <div class="form-group">
                   <label>
-                    Descuento
+                    Descuento %
                   </label>
                   <input type="number" class="form-control" value="0" v-model="descuentoD">
                 </div>
@@ -370,7 +370,7 @@
                 <input class="form-control" type="text" v-model="descuentoT">
               </div>
               <div class="col-md-3">
-                <label >IVA</label>
+                <label >IVA (*)</label>
                 <input class="form-control" type="text" v-model="iva">
               </div>
               <div class="col-md-8">
@@ -387,7 +387,7 @@
 
 
               <div class="col-md-4">
-                <label>Número Comprobante</label>
+                <label>Número Comprobante (*)</label>
                 <input class="form-control" type="text" v-model="num_comprobante">
               </div>
             </div>
@@ -435,7 +435,7 @@
               <div class="col-md-2">
                 <div class="form-group">
                   <label>
-                    Descuento
+                    Descuento %
                   </label>
                   <input type="number" class="form-control" value="0" v-model="descuentoD">
                 </div>
@@ -656,6 +656,7 @@
 </template>
 
 <script>
+import {Joi} from 'vue-joi-validation'
 export default {
   props: ['ruta'],
   data() {
@@ -971,9 +972,21 @@ export default {
         }
       });
 
-      if(me.tipo_comprobante==0) me.errorMostrarMsjEgreso.push('Seleccione el comprobante');
-      if(!me.num_comprobante) me.errorMostrarMsjEgreso.push('Ingrese el número de comprobante');
-      if(!me.iva) me.errorMostrarMsjEgreso.push('Ingrese el iva');
+      const schema = {
+        num_comprobante: Joi.string().alphanum().min(10).max(10).required(),
+        descuentoT: Joi.number().min(1).max(2),
+        iva: Joi.number().precision(2).required()
+      }
+
+      const value = {
+        num_comprobante: this.num_comprobante,
+        descuentoT: this.descuentoT,
+        iva: this.iva
+      }
+
+      const {error} = Joi.validate(value,schema);
+
+      if(error) me.errorMostrarMsjEgreso.push(error.details[0].message);
       if(me.arrayDetalle.length<=0) me.errorMostrarMsjEgreso.push('Ingrese detalles');
 
       if (me.errorMostrarMsjEgreso.length) me.errorEgreso = 1;

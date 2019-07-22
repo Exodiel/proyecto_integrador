@@ -154,7 +154,7 @@
                 </div>
               </div>
               <div class="col-md-3">
-                <label for>Descuento (General)</label>
+                <label for>Descuento % (General)</label>
                 <input type="text" class="form-control" v-model="descuentoT">
               </div>
               <div class="col-md-3">
@@ -232,7 +232,7 @@
               <div class="col-md-2">
                 <div class="form-group">
                   <label>
-                    Descuento
+                    Descuento %
                   </label>
                   <input type="number" class="form-control" value="0" v-model="descuentoD">
                 </div>
@@ -254,7 +254,7 @@
                     <th>Item</th>
                     <th>Precio</th>
                     <th>Cantidad</th>
-                    <th>Descuento</th>
+                    <th>Descuento %</th>
                     <th>Subtotal</th>
                   </thead>
                   <tbody v-if="arrayDetalle.length">
@@ -378,7 +378,7 @@
                 </div>
               </div>
               <div class="col-md-3">
-                <label for>Descuento</label>
+                <label for>Descuento % (General)</label>
                 <input type="number" class="form-control" value="0" v-model="descuentoT">
               </div>
               <div class="col-md-3">
@@ -451,7 +451,7 @@
               <div class="col-md-2">
                 <div class="form-group">
                   <label>
-                    Descuento
+                    Descuento %
                   </label>
                   <input type="number" class="form-control" value="0" v-model="descuentoD">
                 </div>
@@ -473,7 +473,7 @@
                     <th>Item</th>
                     <th>Precio</th>
                     <th>Cantidad</th>
-                    <th>Descuento</th>
+                    <th>Descuento %</th>
                     <th>Subtotal</th>
                   </thead>
                   <tbody v-if="arrayDetalle.length">
@@ -666,6 +666,7 @@
 </template>
 
 <script>
+import {Joi} from 'vue-joi-validation'
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 export default {
@@ -991,11 +992,23 @@ export default {
       this.errorIngreso = 0;
       this.errorMostrarMsjIngreso = [];
 
-      if(this.idproveedor==0) this.errorMostrarMsjIngreso.push('Seleccione un Proveedor');
+      const schema = {
+        idproveedor: Joi.number().min(1).max(10).required(),
+        num_comprobante: Joi.string().alphanum().min(10).max(10).required(),
+        iva: Joi.number().precision(2).required()
+      }
+
+      const value = {
+        idproveedor: this.idproveedor,
+        num_comprobante: this.num_comprobante,
+        iva: this.iva
+      }
+
+      const {error} = Joi.validate(value,schema);
+
       if(!this.descripcion) this.errorMostrarMsjIngreso.push('Seleccione la descripción del ingreso');
       if(this.tipo_comprobante==0) this.errorMostrarMsjIngreso.push('Seleccione el comprobante');
-      if(!this.num_comprobante) this.errorMostrarMsjIngreso.push('Ingrese el número de comprobante');
-      if(!this.iva) this.errorMostrarMsjIngreso.push('Ingrese el iva');
+      if(error) this.errorMostrarMsjIngreso.push(error.details[0].message);
       if(this.arrayDetalle.length<=0) this.errorMostrarMsjIngreso.push('Ingrese detalles');
 
       if (this.errorMostrarMsjIngreso.length) this.errorIngreso = 1;

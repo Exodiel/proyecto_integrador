@@ -269,6 +269,7 @@
 </template>
 
 <script>
+import {Joi} from 'vue-joi-validation'
 import VueBarcode from 'vue-barcode';
 export default {
   props: ["ruta"],
@@ -504,14 +505,26 @@ export default {
     validarItem() {
       this.errorItem = 0;
       this.errorMostrarMsjItem = [];
+
+      const schema = {
+        nombre: Joi.string().min(5).max(100).required(),
+        stock: Joi.number().min(1).max(11).required(),
+        precio_compra: Joi.number().min(1).max(11).precision(2).required(),
+        precio_venta: Joi.number().min(1).max(11).precision(2).required()
+      }
+
+      const value = {
+        nombre: this.nombre,
+        stock: this.stock,
+        precio_compra: this.precio_compra,
+        precio_venta: this.precio_venta
+      }
+
+      const {error} = Joi.validate(value,schema)
+
       if(this.idcategoria == 0) this.errorMostrarMsjItem.push('Seleccione una categoría.');
-      if (!this.nombre)
-        this.errorMostrarMsjItem.push(
-          "El nombre del item no puede estar vacío."
-        );
-      if(!this.stock) this.errorMostrarMsjItem.push("El stock del item debe ser un número y no puede estar vacío.");
-      if(!this.precio_compra) this.errorMostrarMsjItem.push("El precio de compra del item debe ser un número y no puede estar vacío");
-      if(!this.precio_venta) this.errorMostrarMsjItem.push("El precio de venta del item debe ser un número y no puede estar vacío");
+      if (error)this.errorMostrarMsjItem.push(error.details[0].message);
+
 
       if (this.errorMostrarMsjItem.length) this.errorItem = 1;
 

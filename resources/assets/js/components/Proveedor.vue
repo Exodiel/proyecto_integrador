@@ -172,13 +172,15 @@
                 <label class="col-md-3 form-control-label" for="text-input">Tipo documento</label>
                 <div class="col-md-9">
                   <select v-model="tipo_documento" class="form-control">
-                    <option value="RUC">RUC</option>
+                    <option value="RUC_PN">RUC PERSONA NATURAL</option>
+                    <option value="RUC_SPR">RUC SOCIEDAD PRIVADA</option>
+                    <option value="RUC_SP">RUC SOCIEDAD PÚBLICA</option>
                     <option value="CEDULA">CEDULA</option>
                   </select>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Número documento</label>
+                <label class="col-md-3 form-control-label" for="email-input">Número documento (*)</label>
                 <div class="col-md-9">
                   <input
                     type="email"
@@ -189,7 +191,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Dirección</label>
+                <label class="col-md-3 form-control-label" for="email-input">Dirección (*)</label>
                 <div class="col-md-9">
                   <input
                     type="email"
@@ -200,7 +202,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="email-input">Teléfono</label>
+                <label class="col-md-3 form-control-label" for="email-input">Teléfono (*)</label>
                 <div class="col-md-9">
                   <input
                     type="email"
@@ -214,6 +216,11 @@
               <div v-show="errorProveedor" class="form-group row div-error">
                 <div class="text-center text-error">
                   <div v-for="error in errorMostrarMsjProveedor" :key="error" v-text="error"></div>
+                </div>
+              </div>
+              <div v-show="errorProveedor" class="form-group row div-error">
+                <div class="text-center text-error">
+                  <div v-for="error in errorDocumento" :key="error" v-text="error"></div>
                 </div>
               </div>
             </form>
@@ -243,13 +250,18 @@
 </template>
 
 <script>
+import {Joi} from 'vue-joi-validation'
+import {strlen, str_split, substr} from 'locutus/php/strings'
+import {array_sum} from 'locutus/php/array'
+import {empty} from 'locutus/php/var'
+
 export default {
   props: ["ruta"],
   data() {
     return {
       proveedor_id: 0,
       nombre: "",
-      tipo_documento: "RUC",
+      tipo_documento: "RUC_PN",
       num_documento: "",
       direccion: "",
       telefono: "",
@@ -259,6 +271,7 @@ export default {
       tipoAccion: 0,
       errorProveedor: 0,
       errorMostrarMsjProveedor: [],
+      errorDocumento: [],
       pagination: {
         total: 0,
         current_page: 0,
@@ -374,28 +387,231 @@ export default {
       this.errorProveedor = 0;
       this.errorMostrarMsjProveedor = [];
 
-      if (!this.nombre)
-        this.errorMostrarMsjProveedor.push(
-          "El nombre del proveedor no puede estar vacío."
-        );
-      if (!this.tipo_documento)
-        this.errorMostrarMsjProveedor.push(
-          "El tipo de documento del proveedor no puede estar vacío."
-        );
-      if (!this.num_documento)
-        this.errorMostrarMsjProveedor.push(
-          "La número de documento del proveedor no puede estar vacío."
-        );
+      const schema = {
+        nombre : Joi.string().alphanum().min(4).max(100).required(),
+        tipo_documento: Joi.string().min(3).max(20).required(),
+        num_documento: Joi.string().alphanum().min(10).max(13).required()
+      }
+
+      const value = {
+        nombre : this.nombre,
+        tipo_documento: this.tipo_documento,
+        num_documento: this.num_documento
+      }
+
+      const {error} = Joi.validate(value,schema)
+
+      if (error) this.errorMostrarMsjProveedor.push(error.details[0].message);
+
+      if (this.tipo_documento === 'CEDULA') {
+        if (!this.validarCedula(this.num_documento)) this.errorProveedor = 1;
+      } else if(this.tipo_documento === 'RUC_PN') {
+        if (!this.validarRucPersonaNatural(this.num_documento)) this.errorProveedor = 1;
+      } else if (this.tipo_documento === 'RUC_SPR') {
+        if (!this.validarRucSociedadPrivada(this.num_documento)) this.errorProveedor = 1;
+      }else {
+         if (!this.validarRucSociedadPublica(this.num_documento)) this.errorProveedor = 1;
+      }
 
       if (this.errorMostrarMsjProveedor.length) this.errorProveedor = 1;
 
       return this.errorProveedor;
     },
+    validarCedula(numero = '') {
+
+      if (!this.validarInicial(numero, '10') &&
+      !this.validarCodigoProvincia(substr(numero,0,2)) &&
+      !this.validarTercerDigito(numero[2], 'cedula') &&
+      !this.algoritmoModulo10(substr(numero,0,9), numero[9])) {
+        return false;
+      }
+
+      return true;
+    },
+    validarRucPersonaNatural(numero = ''){
+
+      if (!this.validarInicial(numero, '13') &&
+      !this.validarCodigoProvincia(substr(numero,0,2)) &&
+      !this.validarTercerDigito(numero[2], 'ruc_natural') &&
+      !this.algoritmoModulo10(substr(numero,0,9), numero[9])) {
+        return false;
+      }
+
+      return true;
+    },
+    validarRucSociedadPrivada(numero = ''){
+      if (!this.validarInicial(numero, '13') &&
+      !this.validarCodigoProvincia(substr(numero,0,2)) &&
+      !this.validarTercerDigito(numero[2], 'ruc_privada') &&
+      !this.algoritmoModulo11(substr(numero,0,9), numero[9], 'ruc_privada')) {
+        return false;
+      }
+
+      return true;
+    },
+    validarRucSociedadPublica(numero = ''){
+      if (!this.validarInicial(numero, '13') &&
+      !this.validarCodigoProvincia(substr(numero,0,2)) &&
+      !this.validarTercerDigito(numero[2], 'ruc_publica') &&
+      !this.validarCodigoEstablecimiento(substr(numero, 9, 4)) &&
+      !this.algoritmoModulo11(substr(numero,0,9), numero[9], 'ruc_publica')) {
+        return false;
+      }
+
+      return true;
+    },
+    validarInicial(numero, caracteres){
+      if(empty(numero)){
+        this.errorDocumento.push("Número de documento no puede estar vacío");
+        return false;
+      }
+      if(!/^\d+$/.test(numero)) {
+        this.errorDocumento.push("Valor ingresado solo puede tener dígitos");
+        return false;
+      }
+      if (strlen(numero) != caracteres) {
+        this.errorDocumento.push(`Valor ingresado debe tener ${caracteres} caracteres`);
+        return false;
+      }
+
+      return true;
+
+    },
+    validarCodigoProvincia(numero){
+      if (numero < 0 || numero > 24) {
+        this.errorDocumento.push(`Codigo de Provincia (dos primeros dígitos) no deben ser mayor a 24 ni menores a 0`);
+        return false;
+      }
+
+      return true;
+    },
+    validarTercerDigito(numero, tipo){
+      switch (tipo) {
+        case 'cedula':
+          if (numero < 0 || numero < 5) {
+            this.errorDocumento.push("Tercer dígito debe ser menor a  6");
+            return false;
+          }
+          break;
+        case 'ruc_natural':
+          if (numero < 0 || numero > 5) {
+            this.errorDocumento('Tercer dígito debe ser mayor o igual a 0 y menor a 6 para cédulas y RUC de persona natural');
+            return false;
+          }
+          break;
+
+        case 'ruc_privada':
+            if (numero != 9) {
+              this.errorDocumento('Tercer dígito debe ser igual a 9 para sociedades privadas');
+              return false;
+            }
+          break;
+
+        case 'ruc_publica':
+          if (numero != 6) {
+            this.errorDocumento('Tercer dígito debe ser igual a 6 para sociedades públicas');
+            return false;
+          }
+          break;
+
+        default:
+          this.errorDocumento('Tipo de identificación no existe');
+          break;
+      }
+
+      return true;
+    },
+    validarCodigoEstablecimiento(numero){
+      if(numero < 1){
+        this.errorDocumento.push("Código de establecimiento no puede ser cero");
+        return false;
+      }
+      return true;
+    },
+    algoritmoModulo10(digitosIniciales, digitoVerificador){
+      let arrCoeficientes = [2,1,2,1,2,1,2,1,2];
+
+      digitoVerificador = parseInt(digitoVerificador);
+      digitosIniciales = str_split(digitosIniciales);
+
+      let total = 0;
+
+      digitosIniciales.forEach((val, i) => {
+        let valorPosicion = (parseInt(val) * arrCoeficientes[i]);
+
+        if (valorPosicion >= 10) {
+          valorPosicion = str_split(valorPosicion);
+          valorPosicion = array_sum(valorPosicion);
+          valorPosicion = parseInt(valorPosicion);
+        }
+
+        total = total + valorPosicion;
+      });
+
+      const residuo = total % 10;
+
+      let resultado = 0;
+
+      if (residuo == 0) {
+        resultado = 0;
+      }else {
+        resultado = 10 - residuo;
+      }
+
+      if (resultado != digitoVerificador) {
+        this.errorDocumento.push('Dígitos iniciales no validan contra Dígito Idenficador');
+        return false;
+      }
+
+      return true;
+    },
+    algoritmoModulo11(digitosIniciales, digitoVerificador, tipo){
+      let arrCoeficientes = [];
+      switch (tipo) {
+        case 'ruc_privada':
+          arrCoeficientes = [4, 3, 2, 7, 6, 5, 4, 3, 2];
+          break;
+        case 'ruc_publica':
+          arrCoeficientes = [3, 2, 7, 6, 5, 4, 3, 2];
+          break;
+
+        default:
+          this.errorDocumento.push("Tipo de identificación no existe");
+          break;
+      }
+
+      digitoVerificador = parseInt(digitoVerificador);
+      digitosIniciales = str_split(digitosIniciales);
+
+      let total = 0;
+
+      digitosIniciales.forEach((val,i) => {
+        let valorPosicion = (parseInt(val) * arrCoeficientes[i]);
+        total = total + valorPosicion;
+      });
+
+      const residuo = total % 11;
+      let resultado = 0;
+
+      if (residuo == 0) {
+        resultado = 0;
+      }else {
+        resultado = 11 - residuo;
+      }
+
+      if (resultado != digitoVerificador) {
+        this.errorDocumento.push('Dígitos iniciales no validan contra Dígito Idenficador');
+        return false;
+      }
+
+      return true;
+
+    },
     cerrarModal() {
       this.modal = 0;
       this.tituloModal = "";
       this.nombre = "";
-      this.tipo_documento = "RUC";
+      this.tipo_documento = "RUC_PN";
       this.num_documento = "";
       this.direccion = "";
       this.telefono = "";
@@ -409,7 +625,7 @@ export default {
               this.modal = 1;
               this.tituloModal = "Registrar Proveedor";
               this.nombre = "";
-              this.tipo_documento = "RUC";
+              this.tipo_documento = "RUC_PN";
               this.num_documento = "";
               this.direccion = "";
               this.telefono = "";

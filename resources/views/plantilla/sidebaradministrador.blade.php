@@ -45,21 +45,11 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Reportes</a>
-                <ul class="nav-dropdown-items">
-                    <li v-on:click="menu=7" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Ingresos</a>
-                    </li>
-                    <li v-on:click="menu=8" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Ventas</a>
-                    </li>
-                </ul>
-            </li>
-            <li v-on:click="menu=9" class="nav-item">
+
+            <li v-on:click="menu=7" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
             </li>
-            <li v-on:click="menu=10" class="nav-item">
+            <li v-on:click="menu=8" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">TeamJS</span></a>
             </li>
         </ul>

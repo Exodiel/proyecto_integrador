@@ -17,7 +17,7 @@ class CreateProveedoresTable extends Migration
             $table->increments('id');
             $table->string('nombre', 100);
             $table->string('tipo_documento', 20);
-            $table->string('num_documento', 10);
+            $table->string('num_documento', 13);
             $table->string('direccion', 70)->nullable();
             $table->string('telefono', 20)->nullable();
             $table->boolean('condicion')->default(1);

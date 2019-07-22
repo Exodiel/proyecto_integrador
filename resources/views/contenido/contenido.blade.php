@@ -25,15 +25,9 @@
   <user :ruta="ruta"></user>
 </template>
 <template v-if="menu==7">
-  <h1>Reporte Ingresos</h1>
-</template>
-<template v-if="menu==8">
-  <h1>Reporte Egresos</h1>
-</template>
-<template v-if="menu==9">
   <h1>Ayuda</h1>
 </template>
-<template v-if="menu==10">
+<template v-if="menu==8">
   <h1>Acerca de...</h1>
 </template>
 
