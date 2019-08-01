@@ -45,7 +45,7 @@
               </div>
             </div>
           </div>
-          <table class="table table-bordered table-striped table-sm">
+          <table class="table table-bordered table-responsive table-striped table-sm">
             <thead>
               <tr>
                 <th>Opciones</th>
@@ -183,7 +183,8 @@
                 <label class="col-md-3 form-control-label" for="email-input">Número documento (*)</label>
                 <div class="col-md-9">
                   <input
-                    type="email"
+                    type="text"
+                    :maxlength="maximoCaracteres"
                     v-model="num_documento"
                     class="form-control"
                     placeholder="Número de documento"
@@ -194,7 +195,7 @@
                 <label class="col-md-3 form-control-label" for="email-input">Dirección (*)</label>
                 <div class="col-md-9">
                   <input
-                    type="email"
+                    type="text"
                     v-model="direccion"
                     class="form-control"
                     placeholder="Dirección"
@@ -205,7 +206,7 @@
                 <label class="col-md-3 form-control-label" for="email-input">Teléfono (*)</label>
                 <div class="col-md-9">
                   <input
-                    type="email"
+                    type="text"
                     v-model="telefono"
                     class="form-control"
                     placeholder="Teléfono"
@@ -310,6 +311,9 @@ export default {
         from++;
       }
       return pagesArray;
+    },
+    maximoCaracteres: function () {
+      return this.tipo_documento === 'CEDULA' ? 10 : 13;
     }
   },
   methods: {
@@ -388,18 +392,18 @@ export default {
       this.errorMostrarMsjProveedor = [];
 
       const schema = {
-        nombre : Joi.string().alphanum().min(4).max(100).required(),
-        tipo_documento: Joi.string().min(3).max(20).required(),
-        num_documento: Joi.string().alphanum().min(10).max(13).required()
+        nombre : Joi.string().min(4).max(100).required()
       }
 
       const value = {
-        nombre : this.nombre,
-        tipo_documento: this.tipo_documento,
-        num_documento: this.num_documento
+        nombre : this.nombre
       }
 
-      const {error} = Joi.validate(value,schema)
+      const {error} = Joi.validate(value,schema);
+
+      if(!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjProveedor.push("Ingrese solo letras en el nombre");
+      if(!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ0-9])*$/.test(this.direccion)) this.errorMostrarMsjProveedor.push("No ingrese carácteres especiales");
+      if(!/^([0-9])*$/.test(this.telefono)) this.errorMostrarMsjProveedor.push('Ingrese solo números');
 
       if (error) this.errorMostrarMsjProveedor.push(error.details[0].message);
 
@@ -743,6 +747,7 @@ export default {
   opacity: 1 !important;
   position: absolute !important;
   background-color: #3c29297a !important;
+  overflow-y: auto;
 }
 .div-error {
   display: flex;

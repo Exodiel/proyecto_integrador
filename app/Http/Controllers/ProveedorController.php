@@ -16,8 +16,13 @@ class ProveedorController extends Controller
 
     if ($buscar == '') {
       $proveedores = Proveedor::orderBy('id', 'desc')->paginate(10);
+      // $proveedores = DB::connection('mysql2')->table('proveedores')
+      // ->orderBy('id', 'desc')->paginate(10);
     } else {
       $proveedores = Proveedor::where($criterio, 'like', '%' . $buscar . '%')->orderBy('id', 'desc')->paginate(10);
+
+      // $proveedores =  DB::connection('mysql2')->table('proveedores')
+      // ->where($criterio, 'like', '%' . $buscar . '%')->orderBy('id', 'desc')->paginate(10);
     }
 
 
@@ -40,9 +45,15 @@ class ProveedorController extends Controller
 
     $filtro = $request->filtro;
     $proveedores = Proveedor::where('nombre', 'like', '%'.$filtro.'%')
-    //->orWhere('num_documento', 'like', '%'.$filtro.'%')
+    ->orWhere('num_documento', 'like', '%'.$filtro.'%')
     ->select('id','nombre','num_documento', 'condicion')
     ->orderBy('nombre', 'asc')->get();
+
+    // $proveedores =  DB::connection('mysql2')->table('proveedores')
+    // ->where('nombre', 'like', '%'.$filtro.'%')
+    // ->orWhere('num_documento', 'like', '%'.$filtro.'%')
+    // ->select('id','nombre','num_documento', 'condicion')
+    // ->orderBy('nombre', 'asc')->get();
 
     return ['proveedores'=>$proveedores];
   }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaccion extends Model
 {
+  // protected $connection = 'mysql';
   protected $table = 'transacciones';
   protected $fillable = [
     'iditem',

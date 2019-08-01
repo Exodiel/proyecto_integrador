@@ -40,7 +40,7 @@
               </div>
             </div>
           </div>
-          <table class="table table-bordered table-striped table-sm">
+          <table class="table table-bordered table-responsive table-striped table-sm">
             <thead>
               <tr>
                 <th>Opciones</th>
@@ -373,14 +373,17 @@ export default {
       this.errorCategoria = 0;
       this.errorMostrarMsjCategoria = [];
       const schema = {
-        nombre: Joi.string().alphanum().min(2).max(50).required(),
-        descripcion: Joi.string().alphanum().min(2).max(256)
+        nombre: Joi.string().min(2).max(50).required(),
+        descripcion: Joi.string().min(2).max(256)
       }
       const value = {
         nombre : this.nombre,
         descripcion: this.descripcion
       }
       const { error } = Joi.validate(value, schema);
+
+      if(!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjCategoria.push('Solo se permiten letras en el nombre');
+      if(!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.descripcion)) this.errorMostrarMsjCategoria.push('Solo se permiten letras en la descripción');
       if (error) this.errorMostrarMsjCategoria.push(error.details[0].message);
       if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
 

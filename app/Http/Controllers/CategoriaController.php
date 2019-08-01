@@ -20,9 +20,13 @@ class CategoriaController extends Controller
     $criterio = $request->criterio;
 
     if ($buscar == '') {
-      $categorias = Categoria::orderBy('id', 'desc')->paginate(4);
+      $categorias = Categoria::orderBy('id', 'desc')->paginate(10);
+      // $categorias = DB::connection('mysql2')->table('categorias')
+      // ->orderBy('id', 'desc')->paginate(10);
     } else {
-      $categorias = Categoria::where($criterio, 'like', '%' . $buscar . '%')->orderBy('id', 'desc')->paginate(3);
+      $categorias = Categoria::where($criterio, 'like', '%' . $buscar . '%')->orderBy('id', 'desc')->paginate(10);
+      // $categorias = DB::connection('mysql2')->table('categorias')
+      // ->where($criterio, 'like', '%' . $buscar . '%')->orderBy('id', 'desc')->paginate(10);
     }
 
 
@@ -44,6 +48,9 @@ class CategoriaController extends Controller
     if (!$request->ajax()) return redirect('/');
     $categorias = Categoria::where('condicion', '=', '1')
     ->select('id', 'nombre')->orderBy('nombre', 'asc')->get();
+    // $categorias = DB::connection('mysql2')->table('categorias')
+    // ->where('condicion', '=', '1')
+    // ->select('id', 'nombre')->orderBy('nombre', 'asc')->get();
 
     return ['categorias'=> $categorias];
   }

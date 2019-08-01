@@ -4051,8 +4051,8 @@ __webpack_require__.r(__webpack_exports__);
       this.errorCategoria = 0;
       this.errorMostrarMsjCategoria = [];
       var schema = {
-        nombre: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(2).max(50).required(),
-        descripcion: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(2).max(256)
+        nombre: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(2).max(50).required(),
+        descripcion: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(2).max(256)
       };
       var value = {
         nombre: this.nombre,
@@ -4062,6 +4062,8 @@ __webpack_require__.r(__webpack_exports__);
       var _Joi$validate = vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].validate(value, schema),
           error = _Joi$validate.error;
 
+      if (!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjCategoria.push('Solo se permiten letras en el nombre');
+      if (!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.descripcion)) this.errorMostrarMsjCategoria.push('Solo se permiten letras en la descripción');
       if (error) this.errorMostrarMsjCategoria.push(error.details[0].message);
       if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
       return this.errorCategoria;
@@ -5253,8 +5255,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       });
       var schema = {
-        num_comprobante: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(10).max(10).required(),
-        descuentoT: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).max(2),
+        num_comprobante: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(3).max(10).required(),
+        descuentoT: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1),
         iva: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().precision(2).required()
       };
       var value = {
@@ -6369,7 +6371,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.errorMostrarMsjIngreso = [];
       var schema = {
         idproveedor: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).max(10).required(),
-        num_comprobante: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(10).max(10).required(),
+        num_comprobante: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(5).max(10).required(),
         iva: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().precision(2).required()
       };
       var value = {
@@ -6990,10 +6992,10 @@ __webpack_require__.r(__webpack_exports__);
       this.errorItem = 0;
       this.errorMostrarMsjItem = [];
       var schema = {
-        nombre: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(5).max(100).required(),
-        stock: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).max(11).required(),
-        precio_compra: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).max(11).precision(2).required(),
-        precio_venta: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).max(11).precision(2).required()
+        nombre: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(2).max(100).required(),
+        stock: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).required(),
+        precio_compra: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).precision(2).required(),
+        precio_venta: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).precision(2).required()
       };
       var value = {
         nombre: this.nombre,
@@ -7005,6 +7007,9 @@ __webpack_require__.r(__webpack_exports__);
       var _Joi$validate = vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].validate(value, schema),
           error = _Joi$validate.error;
 
+      if (!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjItem.push('El nombre solo permite letras');
+      if (!/^([0-9])*$/.test(this.codigo)) this.errorMostrarMsjItem.push('El codigo solo permite números');
+      if (!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.descripcion)) this.errorMostrarMsjItem.push('La descripción solo permite letras');
       if (this.idcategoria == 0) this.errorMostrarMsjItem.push('Seleccione una categoría.');
       if (error) this.errorMostrarMsjItem.push(error.details[0].message);
       if (this.errorMostrarMsjItem.length) this.errorItem = 1;
@@ -7417,6 +7422,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -7480,6 +7486,9 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return pagesArray;
+    },
+    maximoCaracteres: function maximoCaracteres() {
+      return this.tipo_documento === 'CEDULA' ? 10 : 13;
     }
   },
   methods: {
@@ -7544,19 +7553,18 @@ __webpack_require__.r(__webpack_exports__);
       this.errorProveedor = 0;
       this.errorMostrarMsjProveedor = [];
       var schema = {
-        nombre: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(4).max(100).required(),
-        tipo_documento: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(3).max(20).required(),
-        num_documento: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(10).max(13).required()
+        nombre: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(4).max(100).required()
       };
       var value = {
-        nombre: this.nombre,
-        tipo_documento: this.tipo_documento,
-        num_documento: this.num_documento
+        nombre: this.nombre
       };
 
       var _Joi$validate = vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].validate(value, schema),
           error = _Joi$validate.error;
 
+      if (!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjProveedor.push("Ingrese solo letras en el nombre");
+      if (!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ0-9])*$/.test(this.direccion)) this.errorMostrarMsjProveedor.push("No ingrese carácteres especiales");
+      if (!/^([0-9])*$/.test(this.telefono)) this.errorMostrarMsjProveedor.push('Ingrese solo números');
       if (error) this.errorMostrarMsjProveedor.push(error.details[0].message);
 
       if (this.tipo_documento === 'CEDULA') {
@@ -8164,7 +8172,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -8177,6 +8184,7 @@ __webpack_require__.r(__webpack_exports__);
       nombre: "",
       tipo_documento: "CEDULA",
       num_documento: "",
+      max: 0,
       direccion: "",
       telefono: "",
       email: "",
@@ -8231,6 +8239,9 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return pagesArray;
+    },
+    maximoCaracteres: function maximoCaracteres() {
+      return this.tipo_documento === 'CEDULA' ? 10 : 13;
     }
   },
   methods: {
@@ -8302,18 +8313,14 @@ __webpack_require__.r(__webpack_exports__);
       this.errorMostrarMsjUser = [];
       var schema = {
         nombre: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(5).max(100).required(),
-        num_documento: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(10).max(13).required(),
-        telefono: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(10).max(10).required(),
         email: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().email({
           errorLevel: true
-        }).min(12).max(80).required(),
+        }).min(6).max(80).required(),
         usuario: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().alphanum().min(3).max(20).required(),
         password: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(6).max(191).required()
       };
       var value = {
         nombre: this.nombre,
-        num_documento: this.num_documento,
-        telefono: this.telefono,
         email: this.email,
         usuario: this.usuario,
         password: this.password
@@ -8322,6 +8329,11 @@ __webpack_require__.r(__webpack_exports__);
       var _Joi$validate = vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].validate(value, schema),
           error = _Joi$validate.error;
 
+      if (!/^([0-9])*$/.test(this.telefono)) {
+        errorMostrarMsjUser.push('Teléfono debe ser un número');
+      }
+
+      if (/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjUser.push('El nombre solo debe tener letras');
       if (error) this.errorMostrarMsjUser.push(error.details[0].message);
 
       if (this.tipo_documento === 'CEDULA') {
@@ -20986,7 +20998,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-content {\n  width: 100% !important;\n  position: absolute !important;\n}\n.mostrar {\n  display: list-item !important;\n  opacity: 1 !important;\n  position: absolute !important;\n  background-color: #3c29297a !important;\n}\n.div-error {\n  display: flex;\n  justify-content: center;\n}\n.text-error {\n  color: red !important;\n  font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content {\n  width: 100% !important;\n  position: absolute !important;\n}\n.mostrar {\n  display: list-item !important;\n  opacity: 1 !important;\n  position: absolute !important;\n  background-color: #3c29297a !important;\n  overflow-y: auto;\n}\n.div-error {\n  display: flex;\n  justify-content: center;\n}\n.text-error {\n  color: red !important;\n  font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -21005,7 +21017,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-content {\n  width: 100% !important;\n  position: absolute !important;\n}\n.mostrar {\n  display: list-item !important;\n  opacity: 1 !important;\n  position: absolute !important;\n  background-color: #3c29297a !important;\n}\n.div-error {\n  display: flex;\n  justify-content: center;\n}\n.text-error {\n  color: red !important;\n  font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content {\n  width: 100% !important;\n  position: absolute !important;\n}\n.mostrar {\n  display: list-item !important;\n  opacity: 1 !important;\n  position: absolute !important;\n  background-color: #3c29297a !important;\n  overflow-y: auto;\n}\n.div-error {\n  display: flex;\n  justify-content: center;\n}\n.text-error {\n  color: red !important;\n  font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -21024,7 +21036,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-content {\n  width: 100% !important;\n  position: absolute !important;\n}\n.mostrar {\n  display: list-item !important;\n  opacity: 1 !important;\n  position: absolute !important;\n  background-color: #3c29297a !important;\n}\n.div-error {\n  display: flex;\n  justify-content: center;\n}\n.text-error {\n  color: red !important;\n  font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content {\n  width: 100% !important;\n  position: absolute !important;\n}\n.mostrar {\n  display: list-item !important;\n  opacity: 1 !important;\n  position: absolute !important;\n  background-color: #3c29297a !important;\n  overflow-y: auto;\n}\n.div-error {\n  display: flex;\n  justify-content: center;\n}\n.text-error {\n  color: red !important;\n  font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -106897,7 +106909,10 @@ var render = function() {
           _vm._v(" "),
           _c(
             "table",
-            { staticClass: "table table-bordered table-striped table-sm" },
+            {
+              staticClass:
+                "table table-bordered table-responsive table-striped table-sm"
+            },
             [
               _vm._m(1),
               _vm._v(" "),
@@ -112451,7 +112466,10 @@ var render = function() {
           _vm._v(" "),
           _c(
             "table",
-            { staticClass: "table table-bordered table-striped table-sm" },
+            {
+              staticClass:
+                "table table-bordered table-responsive table-striped table-sm"
+            },
             [
               _vm._m(1),
               _vm._v(" "),
@@ -113478,7 +113496,10 @@ var render = function() {
           _vm._v(" "),
           _c(
             "table",
-            { staticClass: "table table-bordered table-striped table-sm" },
+            {
+              staticClass:
+                "table table-bordered table-responsive table-striped table-sm"
+            },
             [
               _vm._m(1),
               _vm._v(" "),
@@ -113851,7 +113872,8 @@ var render = function() {
                           ],
                           staticClass: "form-control",
                           attrs: {
-                            type: "email",
+                            type: "text",
+                            maxlength: _vm.maximoCaracteres,
                             placeholder: "Número de documento"
                           },
                           domProps: { value: _vm.num_documento },
@@ -113888,7 +113910,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "email", placeholder: "Dirección" },
+                          attrs: { type: "text", placeholder: "Dirección" },
                           domProps: { value: _vm.direccion },
                           on: {
                             input: function($event) {
@@ -113923,7 +113945,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "email", placeholder: "Teléfono" },
+                          attrs: { type: "text", placeholder: "Teléfono" },
                           domProps: { value: _vm.telefono },
                           on: {
                             input: function($event) {
@@ -114232,7 +114254,10 @@ var render = function() {
           _vm._v(" "),
           _c(
             "table",
-            { staticClass: "table table-bordered table-striped table-sm" },
+            {
+              staticClass:
+                "table table-bordered table-responsive table-striped table-sm"
+            },
             [
               _vm._m(1),
               _vm._v(" "),
@@ -114588,6 +114613,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            maxlength: _vm.maximoCaracteres,
                             placeholder: "Número de documento"
                           },
                           domProps: { value: _vm.num_documento },
@@ -114808,24 +114834,8 @@ var render = function() {
                             })
                           }),
                           0
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.errorUser,
-                            expression: "errorUser"
-                          }
-                        ],
-                        staticClass: "form-group row div-error"
-                      },
-                      [
+                        ),
+                        _vm._v(" "),
                         _c(
                           "div",
                           { staticClass: "text-center text-error" },

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ingreso extends Model
 {
+  // protected $connection = 'mysql';
   protected $fillable = [
     'idproveedor',
     'idusuario',

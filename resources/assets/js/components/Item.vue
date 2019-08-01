@@ -40,7 +40,7 @@
               </div>
             </div>
           </div>
-          <table class="table table-bordered table-striped table-sm">
+          <table class="table table-bordered table-responsive table-striped table-sm">
             <thead>
               <tr>
                 <th>Opciones</th>
@@ -507,10 +507,10 @@ export default {
       this.errorMostrarMsjItem = [];
 
       const schema = {
-        nombre: Joi.string().min(5).max(100).required(),
-        stock: Joi.number().min(1).max(11).required(),
-        precio_compra: Joi.number().min(1).max(11).precision(2).required(),
-        precio_venta: Joi.number().min(1).max(11).precision(2).required()
+        nombre: Joi.string().min(2).max(100).required(),
+        stock: Joi.number().min(1).required(),
+        precio_compra: Joi.number().min(1).precision(2).required(),
+        precio_venta: Joi.number().min(1).precision(2).required()
       }
 
       const value = {
@@ -521,6 +521,10 @@ export default {
       }
 
       const {error} = Joi.validate(value,schema)
+
+      if(!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjItem.push('El nombre solo permite letras');
+      if(!/^([0-9])*$/.test(this.codigo)) this.errorMostrarMsjItem.push('El codigo solo permite números');
+      if(!/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.descripcion)) this.errorMostrarMsjItem.push('La descripción solo permite letras');
 
       if(this.idcategoria == 0) this.errorMostrarMsjItem.push('Seleccione una categoría.');
       if (error)this.errorMostrarMsjItem.push(error.details[0].message);
@@ -603,6 +607,7 @@ export default {
   opacity: 1 !important;
   position: absolute !important;
   background-color: #3c29297a !important;
+  overflow-y: auto;
 }
 .div-error {
   display: flex;

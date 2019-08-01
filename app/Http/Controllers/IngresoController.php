@@ -26,12 +26,25 @@ class IngresoController extends Controller
       ->join('users', 'users.id', '=', 'ingresos.idusuario')
       ->select('ingresos.id', 'ingresos.descripcion','ingresos.tipo_comprobante', 'ingresos.num_comprobante', 'ingresos.fecha_hora', 'ingresos.descuento','ingresos.iva', 'ingresos.total', 'proveedores.nombre as proveedor', 'users.usuario')
       ->orderBy('id', 'desc')->paginate(10);
+
+      // $ingresos = DB::connection('mysql2')->table('ingresos')
+      // ->join('proveedores', 'ingresos.idproveedor', '=', 'proveedores.id')
+      // ->join('users', 'users.id', '=', 'ingresos.idusuario')
+      // ->select('ingresos.id', 'ingresos.descripcion','ingresos.tipo_comprobante', 'ingresos.num_comprobante', 'ingresos.fecha_hora', 'ingresos.descuento','ingresos.iva', 'ingresos.total', 'proveedores.nombre as proveedor', 'users.usuario')
+      // ->orderBy('id', 'desc')->paginate(10);
     } else {
       $ingresos = Ingreso::join('proveedores', 'ingresos.idproveedor', '=', 'proveedores.id')
       ->join('users', 'users.id', '=', 'ingresos.idusuario')
       ->select('ingresos.id', 'ingresos.descripcion','ingresos.tipo_comprobante', 'ingresos.num_comprobante', 'ingresos.fecha_hora', 'ingresos.iva', 'ingresos.total', 'proveedores.nombre as proveedor', 'users.usuario')
       ->where('ingresos.'.$criterio, 'like', '%' . $buscar . '%')
       ->orderBy('ingresos.id', 'desc')->paginate(10);
+
+      // $ingresos = DB::connection('mysql2')->table('ingresos')
+      // ->join('proveedores', 'ingresos.idproveedor', '=', 'proveedores.id')
+      // ->join('users', 'users.id', '=', 'ingresos.idusuario')
+      // ->select('ingresos.id', 'ingresos.descripcion','ingresos.tipo_comprobante', 'ingresos.num_comprobante', 'ingresos.fecha_hora', 'ingresos.iva', 'ingresos.total', 'proveedores.nombre as proveedor', 'users.usuario')
+      // ->where('ingresos.'.$criterio, 'like', '%' . $buscar . '%')
+      // ->orderBy('ingresos.id', 'desc')->paginate(10);
     }
 
     return [
@@ -59,6 +72,13 @@ class IngresoController extends Controller
     ->where('ingresos.id', '=', $id)
     ->orderBy('ingresos.id', 'desc')->take(1)->get();
 
+    // $ingreso = DB::connection('mysql2')->table('ingresos')
+    // ->join('proveedores', 'ingresos.idproveedor','=', 'proveedores.id')
+    // ->join('users', 'users.id', '=', 'ingresos.idusuario')
+    // ->select('ingresos.id', 'ingresos.descripcion', 'ingresos.tipo_comprobante', 'ingresos.num_comprobante','ingresos.fecha_hora', 'ingresos.descuento','ingresos.iva', 'ingresos.total', 'proveedores.id as idproveedor','proveedores.nombre as proveedor','users.usuario')
+    // ->where('ingresos.id', '=', $id)
+    // ->orderBy('ingresos.id', 'desc')->take(1)->get();
+
     return ['ingreso' => $ingreso];
   }
 
@@ -72,6 +92,12 @@ class IngresoController extends Controller
     ->select('items.id as iditem', 'detalle_ingresos.cantidad', 'detalle_ingresos.precio', 'detalle_ingresos.descuento', 'items.nombre as item', 'items.stock')
     ->where('detalle_ingresos.idingreso', '=', $id)
     ->orderBy('detalle_ingresos.id', 'desc')->get();
+
+    // $detalles = DB::connection('mysql2')->table('detalle_ingresos')
+    // ->join('items', 'detalle_ingresos.iditem','=', 'items.id')
+    // ->select('items.id as iditem', 'detalle_ingresos.cantidad', 'detalle_ingresos.precio', 'detalle_ingresos.descuento', 'items.nombre as item', 'items.stock')
+    // ->where('detalle_ingresos.idingreso', '=', $id)
+    // ->orderBy('detalle_ingresos.id', 'desc')->get();
 
     return ['detalles' => $detalles];
   }

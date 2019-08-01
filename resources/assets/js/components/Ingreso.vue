@@ -994,7 +994,7 @@ export default {
 
       const schema = {
         idproveedor: Joi.number().min(1).max(10).required(),
-        num_comprobante: Joi.string().alphanum().min(10).max(10).required(),
+        num_comprobante: Joi.string().min(5).max(10).required(),
         iva: Joi.number().precision(2).required()
       }
 

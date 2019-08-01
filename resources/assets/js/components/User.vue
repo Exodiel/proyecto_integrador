@@ -46,7 +46,7 @@
               </div>
             </div>
           </div>
-          <table class="table table-bordered table-striped table-sm">
+          <table class="table table-bordered table-responsive table-striped table-sm">
             <thead>
               <tr>
                 <th>Opciones</th>
@@ -181,6 +181,7 @@
                 <div class="col-md-9">
                   <input
                     type="text"
+                    :maxlength="maximoCaracteres"
                     v-model="num_documento"
                     class="form-control"
                     placeholder="Número de documento"
@@ -241,8 +242,6 @@
                 <div class="text-center text-error">
                   <div v-for="error in errorMostrarMsjUser" :key="error" v-text="error"></div>
                 </div>
-              </div>
-              <div v-show="errorUser" class="form-group row div-error">
                 <div class="text-center text-error">
                   <div v-for="error in errorDocumento" :key="error" v-text="error"></div>
                 </div>
@@ -286,6 +285,7 @@ export default {
       nombre: "",
       tipo_documento: "CEDULA",
       num_documento: "",
+      max: 0,
       direccion: "",
       telefono: "",
       email: "",
@@ -336,6 +336,9 @@ export default {
         from++;
       }
       return pagesArray;
+    },
+    maximoCaracteres: function () {
+      return this.tipo_documento === 'CEDULA' ? 10 : 13;
     }
   },
   methods: {
@@ -420,23 +423,24 @@ export default {
 
       const schema = {
         nombre: Joi.string().min(5).max(100).required(),
-        num_documento: Joi.string().alphanum().min(10).max(13).required(),
-        telefono: Joi.string().alphanum().min(10).max(10).required(),
-        email: Joi.string().email({errorLevel: true}).min(12).max(80).required(),
+        email: Joi.string().email({errorLevel: true}).min(6).max(80).required(),
         usuario: Joi.string().alphanum().min(3).max(20).required(),
         password: Joi.string().min(6).max(191).required()
       }
 
       const value = {
         nombre: this.nombre,
-        num_documento: this.num_documento,
-        telefono: this.telefono,
         email: this.email,
         usuario: this.usuario,
         password: this.password
       }
 
       const {error} = Joi.validate(value,schema)
+
+      if(!/^([0-9])*$/.test(this.telefono)) {
+        errorMostrarMsjUser.push('Teléfono debe ser un número');
+      }
+      if(/^([a-zA-ZñÑáéíóúÁÉÍÓÚ])*$/.test(this.nombre)) this.errorMostrarMsjUser.push('El nombre solo debe tener letras');
 
       if (error) this.errorMostrarMsjUser.push(error.details[0].message);
 
@@ -708,6 +712,7 @@ export default {
   opacity: 1 !important;
   position: absolute !important;
   background-color: #3c29297a !important;
+  overflow-y: auto;
 }
 .div-error {
   display: flex;

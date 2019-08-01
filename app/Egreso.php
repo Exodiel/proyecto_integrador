@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Egreso extends Model
 {
+  // protected $connection = 'mysql';
   protected $fillable = [
     'idusuario',
     'tipo_comprobante',

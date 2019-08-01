@@ -17,8 +17,12 @@ class UserController extends Controller
 
     if ($buscar == '') {
       $usuarios = User::orderBy('id', 'desc')->paginate(10);
+      // $usuarios = DB::connection('mysql2')->table('users')
+      // ->orderBy('id', 'desc')->paginate(10);
     } else {
       $usuarios = User::where($criterio, 'like', '%' . $buscar . '%')->orderBy('id', 'desc')->paginate(10);
+      // $usuarios = DB::connection('mysql2')->table('users')
+      // ->where($criterio, 'like', '%' . $buscar . '%')->orderBy('id', 'desc')->paginate(10);
     }
 
     return [

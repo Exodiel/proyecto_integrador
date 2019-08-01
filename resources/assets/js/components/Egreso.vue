@@ -973,8 +973,8 @@ export default {
       });
 
       const schema = {
-        num_comprobante: Joi.string().alphanum().min(10).max(10).required(),
-        descuentoT: Joi.number().min(1).max(2),
+        num_comprobante: Joi.string().min(3).max(10).required(),
+        descuentoT: Joi.number().min(1),
         iva: Joi.number().precision(2).required()
       }
 

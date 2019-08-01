@@ -25,11 +25,22 @@ class EgresoController extends Controller
       $egresos = Egreso::join('users', 'users.id', '=', 'egresos.idusuario')
       ->select('egresos.id', 'egresos.descripcion','egresos.tipo_comprobante', 'egresos.num_comprobante', 'egresos.fecha_hora', 'egresos.descuento','egresos.iva', 'egresos.total', 'users.usuario')
       ->orderBy('egresos.id', 'desc')->paginate(10);
+
+      // $egresos = DB::connection('mysql2')->table('egresos')
+      // ->join('users', 'users.id', '=', 'egresos.idusuario')
+      // ->select('egresos.id', 'egresos.descripcion','egresos.tipo_comprobante', 'egresos.num_comprobante', 'egresos.fecha_hora', 'egresos.descuento','egresos.iva', 'egresos.total', 'users.usuario')
+      // ->orderBy('egresos.id', 'desc')->paginate(10);
     } else {
       $egresos = Egreso::join('users', 'users.id', '=', 'egresos.idusuario')
       ->select('egresos.id', 'egresos.tipo_comprobante', 'egresos.num_comprobante', 'egresos.fecha_hora', 'egresos.iva', 'egresos.total', 'users.usuario')
       ->where('egresos.'.$criterio, 'like', '%' . $buscar . '%')
       ->orderBy('egresos.id', 'desc')->paginate(10);
+
+      // $egresos = DB::connection('mysql2')->table('egresos')
+      // ->join('users', 'users.id', '=', 'egresos.idusuario')
+      // ->select('egresos.id', 'egresos.tipo_comprobante', 'egresos.num_comprobante', 'egresos.fecha_hora', 'egresos.iva', 'egresos.total', 'users.usuario')
+      // ->where('egresos.'.$criterio, 'like', '%' . $buscar . '%')
+      // ->orderBy('egresos.id', 'desc')->paginate(10);
     }
 
     return [
@@ -56,6 +67,12 @@ class EgresoController extends Controller
     ->where('egresos.id', '=', $id)
     ->orderBy('egresos.id', 'desc')->take(1)->get();
 
+    // $egreso = DB::connection('mysql2')->table('egresos')
+    // ->join('users', 'users.id', '=', 'egresos.idusuario')
+    // ->select('egresos.id', 'egresos.descripcion','egresos.tipo_comprobante', 'egresos.num_comprobante','egresos.fecha_hora', 'egresos.descuento','egresos.iva', 'egresos.total', 'users.usuario')
+    // ->where('egresos.id', '=', $id)
+    // ->orderBy('egresos.id', 'desc')->take(1)->get();
+
     return ['egreso' => $egreso];
   }
 
@@ -69,6 +86,12 @@ class EgresoController extends Controller
     ->select('items.id as iditem', 'detalle_egresos.cantidad', 'detalle_egresos.precio', 'detalle_egresos.descuento', 'items.nombre as item', 'items.stock')
     ->where('detalle_egresos.idegreso', '=', $id)
     ->orderBy('detalle_egresos.id', 'desc')->get();
+
+    // $detalles = DB::connection('mysql2')->table('detalle_egresos')
+    // ->join('items', 'detalle_egresos.iditem','=', 'items.id')
+    // ->select('items.id as iditem', 'detalle_egresos.cantidad', 'detalle_egresos.precio', 'detalle_egresos.descuento', 'items.nombre as item', 'items.stock')
+    // ->where('detalle_egresos.idegreso', '=', $id)
+    // ->orderBy('detalle_egresos.id', 'desc')->get();
 
     return ['detalles' => $detalles];
   }

@@ -44,19 +44,6 @@ return [
         ],
 
         'mysql' => [
-            // 'read' => [
-            //   'host' => env('DB_READ_HOST', 'localhost'),
-            //   'database' => env('DB_READ_DATABASE', ''),
-            //   'username' => env('DB_READ_USERNAME', ''),
-            //   'password' => env('DB_READ_PASSWORD', ''),
-            // ],
-            // 'write' => [
-            //   'host' => env('DB_WRITE_HOST', 'localhost'),
-            //   'database' => env('DB_WRITE_DATABASE', ''),
-            //   'username' => env('DB_WRITE_USERNAME', ''),
-            //   'password' => env('DB_WRITE_PASSWORD', ''),
-            // ],
-            // 'sticky' => true,
             'driver' => 'mysql',
             'database' => 'dbip',
             'host' => env('DB_HOST', '127.0.0.1'),
@@ -76,6 +63,25 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+
+        // 'mysql2' => [
+        //   'driver' => 'mysql',
+        //   'host' => env('DB_HOST_SLAVE'),
+        //   'port' => env('DB_PORT_SLAVE', '3306'),
+        //   'database' => env('DB_DATABASE_SLAVE'),
+        //   'username' => env('DB_USERNAME_SLAVE'),
+        //   'password' => env('DB_PASSWORD_SLAVE'),
+        //   'unix_socket' => env('DB_SOCKET', ''),
+        //   'charset' => 'utf8mb4',
+        //   'collation' => 'utf8mb4_unicode_ci',
+        //   'prefix' => '',
+        //   'prefix_indexes' => true,
+        //   'strict' => true,
+        //   'engine' => null,
+        //   'options' => extension_loaded('pdo_mysql') ? array_filter([
+        //       PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+        //   ]) : [],
+        // ],
 
         'pgsql' => [
             'driver' => 'pgsql',

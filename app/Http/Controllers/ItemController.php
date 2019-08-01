@@ -18,11 +18,22 @@ class ItemController extends Controller
       $items = Item::join('categorias', 'items.idcategoria', '=', 'categorias.id')
         ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
         ->orderBy('items.id', 'desc')->paginate(10);
+
+      // $items = DB::connection('mysql2')->table('items')
+      //   ->join('categorias', 'items.idcategoria', '=', 'categorias.id')
+      //   ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
+      //   ->orderBy('items.id', 'desc')->paginate(10);
     } else {
       $items = Item::join('categorias', 'items.idcategoria', '=', 'categorias.id')
         ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
         ->where('items.' . $criterio, 'like', '%' . $buscar . '%')
         ->orderBy('items.id', 'desc')->paginate(10);
+
+      // $items = DB::connection('mysql2')->table('items')
+      // ->join('categorias', 'items.idcategoria', '=', 'categorias.id')
+      //   ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
+      //   ->where('items.' . $criterio, 'like', '%' . $buscar . '%')
+      //   ->orderBy('items.id', 'desc')->paginate(10);
     }
 
 
@@ -50,11 +61,22 @@ class ItemController extends Controller
       $items = Item::join('categorias', 'items.idcategoria', '=', 'categorias.id')
         ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
         ->orderBy('items.id', 'desc')->paginate(10);
+
+      // $items = DB::connection('mysql2')->table('items')
+      // ->join('categorias', 'items.idcategoria', '=', 'categorias.id')
+      //   ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
+      //   ->orderBy('items.id', 'desc')->paginate(10);
     } else {
       $items = Item::join('categorias', 'items.idcategoria', '=', 'categorias.id')
         ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
         ->where('items.' . $criterio, 'like', '%' . $buscar . '%')
         ->orderBy('items.id', 'desc')->paginate(10);
+
+      // $items = DB::connection('mysql2')->table('items')
+      // ->join('categorias', 'items.idcategoria', '=', 'categorias.id')
+      //   ->select('items.id', 'items.idcategoria', 'items.codigo', 'items.nombre', 'categorias.nombre as nombre_categoria', 'items.precio_compra', 'items.utilidad', 'items.precio_venta', 'items.stock', 'items.descripcion', 'items.condicion')
+      //   ->where('items.' . $criterio, 'like', '%' . $buscar . '%')
+      //   ->orderBy('items.id', 'desc')->paginate(10);
     }
 
 
@@ -71,6 +93,15 @@ class ItemController extends Controller
 
     $item = Item::select('codigo')->where('id', $id)->get();
 
+    // $transacciones = DB::connection('mysql2')->table('items')
+    // ->join('transacciones', 'transacciones.iditem', '=', 'items.id')
+    //   ->select('transacciones.detalle', 'transacciones.fecha_hora', 'transacciones.entrada_cantidad', 'transacciones.entrada_precio_unitario', 'transacciones.entrada_valor_total', 'transacciones.salida_cantidad', 'transacciones.salida_precio_unitario', 'transacciones.salida_valor_total', 'transacciones.exis_cantidad', 'transacciones.exis_precio_unitario', 'transacciones.exis_valor_total')
+    //   ->where('items.id', '=', $id)
+    //   ->orderBy('transacciones.fecha_hora', 'asc')->get();
+
+    // $item = DB::connection('mysql2')->table('items')
+    // ->select('codigo')->where('id', $id)->get();
+
 
     $pdf = \PDF::loadView('pdf.kardexpdf', ['transacciones' => $transacciones]);
     return $pdf->setPaper('a4', 'landscape')
@@ -84,6 +115,10 @@ class ItemController extends Controller
     $filtro = $request->filtro;
     $items = Item::where('codigo', '=', $filtro)
       ->select('id', 'nombre')->orderBy('nombre', 'asc')->take(1)->get();
+
+    // $items = DB::connection('mysql2')->table('items')
+    // ->where('codigo', '=', $filtro)
+    //   ->select('id', 'nombre')->orderBy('nombre', 'asc')->take(1)->get();
 
     return ['items' => $items];
   }
