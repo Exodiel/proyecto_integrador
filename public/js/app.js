@@ -5063,7 +5063,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (me.arrayItem.length > 0) {
           me.item = me.arrayItem[0]["nombre"];
           me.iditem = me.arrayItem[0]["id"];
-          me.stock = me.arrayItem[0]['stock'];
+          me.precio = me.arrayItem[0]['precio_venta'];
+          me.precioC = me.arrayItem[0]["precio_compra"];
+          me.cantidad = 1;
+          me.stock = me.arrayItem[0]["stock"];
         } else {
           me.item = "No existe item";
           me.iditem = 0;
@@ -5256,7 +5259,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       var schema = {
         num_comprobante: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(3).max(10).required(),
-        descuentoT: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1),
+        descuentoT: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number(),
         iva: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().precision(2).required()
       };
       var value = {
@@ -6194,6 +6197,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (me.arrayItem.length > 0) {
           me.item = me.arrayItem[0]["nombre"];
           me.iditem = me.arrayItem[0]["id"];
+          me.precio = me.arrayItem[0]["precio_compra"];
+          me.cantidad = 1;
         } else {
           me.item = "No existe item";
           me.iditem = 0;
@@ -6370,12 +6375,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.errorIngreso = 0;
       this.errorMostrarMsjIngreso = [];
       var schema = {
-        idproveedor: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().min(1).max(10).required(),
         num_comprobante: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].string().min(5).max(10).required(),
         iva: vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__["Joi"].number().precision(2).required()
       };
       var value = {
-        idproveedor: this.idproveedor,
         num_comprobante: this.num_comprobante,
         iva: this.iva
       };
@@ -6385,6 +6388,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (!this.descripcion) this.errorMostrarMsjIngreso.push('Seleccione la descripción del ingreso');
       if (this.tipo_comprobante == 0) this.errorMostrarMsjIngreso.push('Seleccione el comprobante');
+      if (this.idproveedor == 0) this.errorMostrarMsjIngreso.push('Seleccione el proveedor');
       if (error) this.errorMostrarMsjIngreso.push(error.details[0].message);
       if (this.arrayDetalle.length <= 0) this.errorMostrarMsjIngreso.push('Ingrese detalles');
       if (this.errorMostrarMsjIngreso.length) this.errorIngreso = 1;
@@ -6507,6 +6511,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_joi_validation__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_joi_validation__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_barcode__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-barcode */ "./node_modules/vue-barcode/index.js");
 /* harmony import */ var vue_barcode__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_barcode__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
 //
 //
 //
@@ -111018,7 +111025,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Registrar Compra")]
+                        [_vm._v("Registrar Ingreso")]
                       )
                     ])
                   ])
@@ -112528,19 +112535,23 @@ var render = function() {
                               )
                             ],
                         _vm._v("  \n                "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-info btn-sm",
-                            attrs: { type: "button" },
-                            on: {
-                              click: function($event) {
-                                return _vm.cargarPdf(item.id)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-doc" })]
-                        )
+                        item.condicion
+                          ? [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-info btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.cargarPdf(item.id)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-doc" })]
+                              )
+                            ]
+                          : _vm._e()
                       ],
                       2
                     ),

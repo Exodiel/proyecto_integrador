@@ -160,12 +160,13 @@ class EgresoController extends Controller
             $tran->exis_valor_total = $val->exis_valor_total - $tran->entrada_valor_total;
             $tran->exis_precio_unitario = $tran->exis_valor_total / $tran->exis_cantidad;
             $tran->save();
+
+            $item->stock_ant = $det['stock'];
+            $item->precio_compra = $tran->exis_precio_unitario;
+            $item->save();
           }
         }
 
-        $item->stock_ant = $det['stock'];
-        $item->precio_compra = $tran->exis_precio_unitario;
-        $item->save();
         $detalle = new DetalleEgreso();
         $detalle->idegreso = $egreso->id;
         $detalle->iditem = $det['iditem'];

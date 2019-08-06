@@ -767,7 +767,10 @@ export default {
           if (me.arrayItem.length > 0) {
             me.item = me.arrayItem[0]["nombre"];
             me.iditem = me.arrayItem[0]["id"];
-            me.stock = me.arrayItem[0]['stock'];
+            me.precio = me.arrayItem[0]['precio_venta'];
+            me.precioC = me.arrayItem[0]["precio_compra"];
+            me.cantidad = 1;
+            me.stock = me.arrayItem[0]["stock"];
           } else {
             me.item = "No existe item";
             me.iditem = 0;
@@ -974,7 +977,7 @@ export default {
 
       const schema = {
         num_comprobante: Joi.string().min(3).max(10).required(),
-        descuentoT: Joi.number().min(1),
+        descuentoT: Joi.number(),
         iva: Joi.number().precision(2).required()
       }
 

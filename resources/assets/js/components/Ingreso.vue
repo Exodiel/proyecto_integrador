@@ -342,7 +342,7 @@
                   class="btn btn-primary"
                   type="button"
                   @click="registrarIngreso()"
-                >Registrar Compra</button>
+                >Registrar Ingreso</button>
               </div>
             </div>
           </div>
@@ -808,6 +808,8 @@ export default {
           if (me.arrayItem.length > 0) {
             me.item = me.arrayItem[0]["nombre"];
             me.iditem = me.arrayItem[0]["id"];
+            me.precio = me.arrayItem[0]["precio_compra"];
+            me.cantidad = 1;
           } else {
             me.item = "No existe item";
             me.iditem = 0;
@@ -993,13 +995,11 @@ export default {
       this.errorMostrarMsjIngreso = [];
 
       const schema = {
-        idproveedor: Joi.number().min(1).max(10).required(),
         num_comprobante: Joi.string().min(5).max(10).required(),
         iva: Joi.number().precision(2).required()
       }
 
       const value = {
-        idproveedor: this.idproveedor,
         num_comprobante: this.num_comprobante,
         iva: this.iva
       }
@@ -1008,6 +1008,7 @@ export default {
 
       if(!this.descripcion) this.errorMostrarMsjIngreso.push('Seleccione la descripción del ingreso');
       if(this.tipo_comprobante==0) this.errorMostrarMsjIngreso.push('Seleccione el comprobante');
+      if(this.idproveedor==0) this.errorMostrarMsjIngreso.push('Seleccione el proveedor');
       if(error) this.errorMostrarMsjIngreso.push(error.details[0].message);
       if(this.arrayDetalle.length<=0) this.errorMostrarMsjIngreso.push('Ingrese detalles');
 

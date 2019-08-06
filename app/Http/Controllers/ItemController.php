@@ -114,7 +114,7 @@ class ItemController extends Controller
 
     $filtro = $request->filtro;
     $items = Item::where('codigo', '=', $filtro)
-      ->select('id', 'nombre')->orderBy('nombre', 'asc')->take(1)->get();
+      ->select('id', 'nombre', 'precio_compra', 'precio_venta', 'stock')->orderBy('nombre', 'asc')->take(1)->get();
 
     // $items = DB::connection('mysql2')->table('items')
     // ->where('codigo', '=', $filtro)

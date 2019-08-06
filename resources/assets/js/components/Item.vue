@@ -77,13 +77,16 @@
                       <i class="icon-check"></i>
                     </button>
                   </template> &nbsp;
-                  <button
-                    type="button"
-                    class="btn btn-info btn-sm"
-                    @click="cargarPdf(item.id)"
-                  >
-                    <i class="icon-doc"></i>
-                  </button>
+                  <template v-if="item.condicion">
+                    <button
+                      type="button"
+                      class="btn btn-info btn-sm"
+                      @click="cargarPdf(item.id)"
+                    >
+                      <i class="icon-doc"></i>
+                    </button>
+                  </template>
+
                 </td>
                 <td v-text="item.codigo"></td>
                 <td v-text="item.nombre"></td>
