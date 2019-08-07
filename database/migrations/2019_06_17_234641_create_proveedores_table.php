@@ -14,14 +14,14 @@ class CreateProveedoresTable extends Migration
     public function up()
     {
         Schema::create('proveedores', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('nombre', 100);
-            $table->string('tipo_documento', 20);
-            $table->string('num_documento', 13);
-            $table->string('direccion', 70)->nullable();
-            $table->string('telefono', 20)->nullable();
-            $table->boolean('condicion')->default(1);
-            $table->timestamps();
+          $table->increments('id');
+          $table->string('nombre', 100);
+          $table->string('tipo_documento', 20);
+          $table->string('num_documento', 13);
+          $table->string('direccion', 70)->nullable();
+          $table->string('telefono', 20)->nullable();
+          $table->boolean('condicion')->default(1);
+          $table->timestamps();
         });
     }
 
@@ -32,6 +32,6 @@ class CreateProveedoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('proveedores');
+      Schema::dropIfExists('proveedores');
     }
 }

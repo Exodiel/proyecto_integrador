@@ -147,7 +147,7 @@
                   <select class="form-control" v-model="descripcion">
                     <option value="0">Seleccione</option>
                     <option value="SALIDA">Salida</option>
-                    <option value="DEVOLUCION">Devolución</option>
+                    <option value="DEVOLUCION_S">Devolución</option>
                   </select>
                 </div>
               </div>

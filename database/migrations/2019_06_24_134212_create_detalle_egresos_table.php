@@ -14,14 +14,14 @@ class CreateDetalleEgresosTable extends Migration
     public function up()
     {
         Schema::create('detalle_egresos', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('idegreso')->unsigned();
-            $table->foreign('idegreso')->references('id')->on('egresos');
-            $table->integer('iditem')->unsigned();
-            $table->foreign('iditem')->references('id')->on('items');
-            $table->integer('cantidad');
-            $table->decimal('descuento', 4, 2);
-            $table->decimal('precio', 11, 2);
+          $table->increments('id');
+          $table->integer('idegreso')->unsigned();
+          $table->foreign('idegreso')->references('id')->on('egresos');
+          $table->integer('iditem')->unsigned();
+          $table->foreign('iditem')->references('id')->on('items');
+          $table->integer('cantidad');
+          $table->decimal('descuento', 4, 2);
+          $table->decimal('precio', 11, 2);
         });
     }
 
@@ -32,6 +32,6 @@ class CreateDetalleEgresosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detalle_egresos');
+      Schema::dropIfExists('detalle_egresos');
     }
 }

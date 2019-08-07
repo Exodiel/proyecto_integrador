@@ -36,6 +36,6 @@ class CreateIngresosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ingresos');
+      Schema::dropIfExists('ingresos');
     }
 }

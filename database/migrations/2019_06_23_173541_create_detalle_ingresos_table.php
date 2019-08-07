@@ -14,14 +14,14 @@ class CreateDetalleIngresosTable extends Migration
     public function up()
     {
         Schema::create('detalle_ingresos', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('idingreso')->unsigned();
-            $table->foreign('idingreso')->references('id')->on('ingresos')->onDelete('cascade');
-            $table->integer('iditem')->unsigned();
-            $table->foreign('iditem')->references('id')->on('items');
-            $table->integer('cantidad');
-            $table->decimal('descuento', 11, 2);
-            $table->decimal('precio', 11, 2);
+          $table->increments('id');
+          $table->integer('idingreso')->unsigned();
+          $table->foreign('idingreso')->references('id')->on('ingresos')->onDelete('cascade');
+          $table->integer('iditem')->unsigned();
+          $table->foreign('iditem')->references('id')->on('items');
+          $table->integer('cantidad');
+          $table->decimal('descuento', 11, 2);
+          $table->decimal('precio', 11, 2);
         });
     }
 
@@ -32,6 +32,6 @@ class CreateDetalleIngresosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detalle_ingresos');
+      Schema::dropIfExists('detalle_ingresos');
     }
 }

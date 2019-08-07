@@ -107823,7 +107823,7 @@ var render = function() {
                               _vm._v("Salida")
                             ]),
                             _vm._v(" "),
-                            _c("option", { attrs: { value: "DEVOLUCION" } }, [
+                            _c("option", { attrs: { value: "DEVOLUCION_S" } }, [
                               _vm._v("Devolución")
                             ])
                           ]

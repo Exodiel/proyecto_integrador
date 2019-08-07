@@ -35,6 +35,6 @@ class CreateEgresosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('egresos');
+      Schema::dropIfExists('egresos');
     }
 }
